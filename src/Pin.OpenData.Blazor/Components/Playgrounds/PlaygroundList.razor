@@ -1,4 +1,5 @@
 ﻿@inject IPlaygroundService PlaygroundService
+@inject IJSRuntime JSRuntime
 
 <button class="btn btn-success" @onclick="ShowCreateForm">Voeg toe</button>
 
@@ -46,6 +47,7 @@
 
     private async Task HandleDelete(Playground playground)
     {
+        await JSRuntime.InvokeVoidAsync("alert", "Playground deleted successfully.");
         await PlaygroundService.DeleteAsync(playground.Id);
     }
 
