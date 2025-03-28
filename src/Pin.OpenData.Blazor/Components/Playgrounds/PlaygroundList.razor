@@ -1,0 +1,56 @@
+﻿@inject IPlaygroundService PlaygroundService
+
+<button class="btn btn-success" @onclick="ShowCreateForm">Voeg toe</button>
+
+@if (Playgrounds.Count() > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Themes</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playground in Playgrounds)
+            {
+                <tr>
+                    <td>@playground.Title</td>
+                    <td>@playground.Themes</td>
+                    <td>
+                        <div class="btn btn-warning" @onclick="@(() => HandleEdit(playground))">Edit</div>
+                        <div class="btn btn-danger" @onclick="@(() => HandleDelete(playground))">Delete</div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    public List<Playground> Playgrounds { get; set; }
+
+    [Parameter]
+    public EventCallback OnShowCreateForm { get; set; }
+
+    [Parameter]
+    public EventCallback<Playground> OnShowEditForm { get; set; }
+
+    private Task ShowCreateForm()
+    {
+        return OnShowCreateForm.InvokeAsync();
+    }
+
+    private async Task HandleDelete(Playground playground)
+    {
+        await PlaygroundService.DeleteAsync(playground.Id);
+    }
+
+    private Task HandleEdit(Playground playground)
+    {
+        return OnShowEditForm.InvokeAsync(playground);
+    }
+}

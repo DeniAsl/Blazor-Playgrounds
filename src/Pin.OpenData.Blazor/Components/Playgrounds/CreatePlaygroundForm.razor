@@ -1,0 +1,67 @@
+﻿@inject IPlaygroundService PlaygroundService
+
+<EditForm Model="playground" OnValidSubmit="HandleCreateNewPlayground">
+    <DataAnnotationsValidator />
+    
+    <label for="Title">Title</label>
+    <div class="form-group">
+        <InputText @bind-Value="playground.Title" class="form-control" />
+        <ValidationMessage For="@(() => playground.Title)" />
+    </div>
+    
+    <label for="LocalDescription">Local Description</label>
+    <div class="form-group">
+        <InputText @bind-Value="playground.LocalDescription" class="form-control" />
+        <ValidationMessage For="@(() => playground.LocalDescription)" />
+    </div>
+    
+    <label for="Description">Description</label>
+    <div class="form-group">
+        <InputText @bind-Value="playground.Description" class="form-control" />
+		<ValidationMessage For="@(() => playground.Description)" />
+    </div>
+    
+    <label for="Themes">Themes</label>
+    <div class="form-group">
+        <InputText @bind-Value="playground.Themes" class="form-control" />
+		<ValidationMessage For="@(() => playground.Themes)" />
+    </div>
+    
+    <label for="Longitude">Longitude (optioneel)</label>
+    <div class="form-group">
+        <InputNumber @bind-Value="playground.Longitude" class="form-control" />
+        <ValidationMessage For="@(() => playground.Longitude)" />
+    </div>
+    
+    <label for="Latitude">Latitude (optioneel)</label>
+    <div class="form-group">
+        <InputNumber @bind-Value="playground.Latitude" class="form-control" />
+        <ValidationMessage For="@(() => playground.Latitude)" />
+    </div>
+    
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-danger" @onclick="HandleCancelNewPlayground">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    private Playground playground = new();
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task HandleCreateNewPlayground()
+    {
+        await PlaygroundService.AddAsync(playground);
+        await OnSave.InvokeAsync();
+    }
+
+    private Task HandleCancelNewPlayground()
+    {
+        return OnCancel.InvokeAsync();
+    }
+}

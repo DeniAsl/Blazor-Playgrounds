@@ -1,0 +1,69 @@
+﻿@inject IPlaygroundService PlaygroundService
+
+<EditForm Model="PlaygroundToEdit" OnValidSubmit="HandleEditTool">
+    <DataAnnotationsValidator />
+
+    <label for="Title">Title</label>
+    <div class="form-group">
+        <InputText @bind-Value="PlaygroundToEdit.Title" class="form-control" />
+        <ValidationMessage For="@(() => PlaygroundToEdit.Title)" />
+    </div>
+
+    <label for="LocalDescription">Local Description</label>
+    <div class="form-group">
+        <InputText @bind-Value="PlaygroundToEdit.LocalDescription" class="form-control" />
+        <ValidationMessage For="@(() => PlaygroundToEdit.LocalDescription)" />
+    </div>
+
+    <label for="Description">Description</label>
+    <div class="form-group">
+        <InputText @bind-Value="PlaygroundToEdit.Description" class="form-control" />
+        <ValidationMessage For="@(() => PlaygroundToEdit.Description)" />
+    </div>
+
+    <label for="Themes">Themes</label>
+    <div class="form-group">
+        <InputText @bind-Value="PlaygroundToEdit.Themes" class="form-control" />
+        <ValidationMessage For="@(() => PlaygroundToEdit.Themes)" />
+    </div>
+
+    <label for="Longitude">Longitude (optioneel)</label>
+    <div class="form-group">
+        <InputNumber @bind-Value="PlaygroundToEdit.Longitude" class="form-control" />
+        <ValidationMessage For="@(() => PlaygroundToEdit.Longitude)" />
+    </div>
+
+    <label for="Latitude">Latitude (optioneel)</label>
+    <div class="form-group">
+        <InputNumber @bind-Value="PlaygroundToEdit.Latitude" class="form-control" />
+        <ValidationMessage For="@(() => PlaygroundToEdit.Latitude)" />
+    </div>
+
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-danger" @onclick="HandleCancelEditTool">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Playground PlaygroundToEdit { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task HandleEditTool()
+    {
+        await PlaygroundService.EditAsync(PlaygroundToEdit);
+
+        await OnSave.InvokeAsync();
+    }
+
+    private Task HandleCancelEditTool()
+    {
+        return OnCancel.InvokeAsync();
+    }
+}

@@ -1,3 +1,6 @@
+using Pin.OpenData.Core.Services;
+using Pin.OpenData.Core.Services.Interfaces;
+
 namespace Pin.OpenData.Blazor
 {
     public class Program
@@ -9,6 +12,7 @@ namespace Pin.OpenData.Blazor
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
+            builder.Services.AddSingleton<IPlaygroundService, PlaygroundService>();
 
             var app = builder.Build();
 

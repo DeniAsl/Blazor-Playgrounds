@@ -1,0 +1,86 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject IPlaygroundService PlaygroundService
+
+<h3>Playgrounds</h3>
+
+@if (!isSubscribed)
+{
+    <div>
+        <h4>Subscribe to our newsletter</h4>
+        <input @bind="email" placeholder="Enter your email" />
+        <button @onclick="Subscribe">Subscribe</button>
+    </div>
+}
+else
+{
+    <div>
+        <p>Thank you for subscribing to our newsletter! Email:@email</p>
+    </div>
+}
+
+@if (showCreateForm)
+{
+    <CreatePlaygroundForm OnSave="HandleOnSave" OnCancel="HandleOnCancel" />
+}
+else if (showEditForm)
+{
+    <EditPlaygroundForm PlaygroundToEdit="playgroundEdit" OnCancel="HideEditForm" OnSave="HideEditForm" />
+}
+else
+{
+    <PlaygroundList Playgrounds="_playgrounds" OnShowCreateForm="HandleShowCreateForm" OnShowEditForm="HandleShowEditForm" />
+}
+
+@code {
+    private List<Playground> _playgrounds = new();
+    private bool showCreateForm = false;
+    private bool showEditForm = false;
+    private bool isSubscribed = false;
+    private string email;
+
+    private Playground playgroundEdit = new Playground();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _playgrounds = await PlaygroundService.GetAllAsync();
+    }
+
+    private void HandleOnSave()
+    {
+        showCreateForm = false;
+    }
+
+    private void HandleOnCancel()
+    {
+        showCreateForm = false;
+    }
+
+    private void HandleShowCreateForm()
+    {
+        showCreateForm = true;
+    }
+
+    private void HandleShowEditForm(Playground playground)
+    {
+        showEditForm = true;
+        playgroundEdit = new Playground();
+        playgroundEdit.Id = playground.Id;
+        playgroundEdit.Title = playground.Title;
+        playgroundEdit.LocalDescription = playground.LocalDescription;
+        playgroundEdit.Description = playground.Description;
+        playgroundEdit.Themes = playground.Themes;
+        playgroundEdit.Longitude = playground.Longitude;
+        playgroundEdit.Latitude = playground.Latitude;
+    }
+
+    private void HideEditForm()
+    {
+        showEditForm = false;
+    }
+
+    private void Subscribe()
+    {
+        isSubscribed = true;
+    }
+}
